@@ -1,0 +1,178 @@
+<div class="add-task-modal pb-1"><div class="modal-header"><span class="modal-title">New Task</span>
+    <div class="ms-auto">
+        <i class="fa fa-times text-dark fa-lg" aria-hidden="true" (click)="closeModal()" ></i>
+  </div>
+  </div>
+  <div class="modal-body m-2">
+    <form
+    [formGroup]="addTaskForm"
+    (ngSubmit)="onClickSubmitAdd(addTaskForm.value)"
+  >
+    
+    <div class="row  mb-2">
+        <div class="form-group">
+              <input
+                placeholder="Task Title "
+                formControlName="task_name"
+                class="custom-input w-100"
+                maxlength="100"
+              />
+             
+              <div
+                *ngIf="
+                  addTaskForm?.get('task_name')?.errors?.['required']
+                "
+                class="alert-error mt-2"
+              >
+                * required.
+              </div>
+         
+      </div> 
+    </div>
+    <div class="row  mt-4 mb-2">
+        <div
+          class="col-md-4 p-0"
+        >
+            <div >
+              <ng-select
+                [searchable]="true"
+                [items]="  projectOptions"
+                formControlName="project_name"
+                bindLabel="name"
+                placeholder="Project"
+                [closeOnSelect]="true"
+                (change)="projectChange($event)"
+              >
+                <ng-template ng-option-tmp let-item="item">
+                  <div
+                    *ngIf="item.name.length > 12"
+                  >
+                    {{
+                      item.name.length > 12
+                        ? (item.name | slice : 0 : 12) + "..."
+                        : item.name
+                    }}
+                  </div>
+                  <div *ngIf="12 >= item.name.length">
+                    {{ item.name }}
+                  </div>
+                </ng-template>
+              </ng-select>
+            </div>
+          <span  class="alert-error"   *ngIf="
+          addTaskForm?.get('project_name')?.errors?.['required']
+        ">* required. </span>
+        </div>
+        <div
+          class="col-md-4"
+        >
+              <div >
+                <ng-select
+                  [searchable]="true"
+                  [items]="assigneeOptions"
+                  formControlName="assigned_to"
+                  bindLabel="name"
+                  placeholder="Team"
+                  [closeOnSelect]="true"
+                  (change)="projectChange($event)"
+                >
+                  <ng-template ng-option-tmp let-item="item">
+                    <div
+                      placement="right"
+                      containerClass="customClassTooltip"
+                      *ngIf="item.name.length > 12"
+                    >
+                      {{
+                        item.name.length > 12
+                          ? (item.name | slice : 0 : 12) + "..."
+                          : item.name
+                      }}
+                    </div>
+                    <div *ngIf="12 >= item.name.length">
+                      {{ item.name }}
+                    </div>
+                  </ng-template>
+                </ng-select>
+          </div>
+          <div
+          *ngIf="
+            addTaskForm.get('assigned_to')?.errors?.['required']
+          "
+          class="alert-error"
+        >
+          * required.
+    </div>
+        </div>
+
+        <div class="col-md-4 p-0">
+                <input
+                  type="text"
+                  placeholder="Start"
+                  class=" custom-form-control w-100 ps-2"
+                  bsDatepicker
+                  #dp="bsDatepicker"
+                  [minDate]="minDate"
+                  [bsConfig]="{
+                    isAnimated: true,
+                    dateInputFormat: 'DD-MM-YYYY',
+                    containerClass: 'theme-orange',
+                    showWeekNumbers: false
+                  }"
+                  formControlName="due_date"
+                  [outsideClick]="true"
+                  (bsValueChange)="onValueChange($event)"
+                />
+                <div
+                *ngIf="
+                  addTaskForm.get('due_date')?.errors?.['required']
+                "
+                class="alert-error"
+              >
+                * required.
+          </div>
+            </div>
+          
+      </div>
+        <div class="row mt-4 mb-2">
+         <textarea formControlName="description" rows="5"
+         cols="50"[ngClass]="{
+          'border-touched': addTaskForm.get('description')?.touched,
+          'border-invalid': addTaskForm.get('description')?.invalid && addTaskForm.get('description')?.touched
+        }"
+         placeholder="Write your notes..."></textarea>
+        
+        </div>
+        <div
+        *ngIf="
+          addTaskForm.get('description')?.errors?.['required']
+        "
+        class="alert-error"
+      >
+        * required.
+  </div>
+        <div class="row">
+          <div class="col-md-12">
+            <div class="mb-3" class="d-flex justify-content-end">
+              <button
+                type="submit"
+                class="btn btn-custom-success"
+                [disabled]="
+                  !addTaskForm.valid" 
+                
+              >
+               Create
+              </button>
+              <button
+                type="button"
+                class="btn btn-custom-cancel"
+                (click)= "closeModal()"
+              >
+                Cancel
+              </button>
+            </div>
+            <div class="mb-3"></div>
+          </div>
+        </div>
+        </form>
+      
+     
