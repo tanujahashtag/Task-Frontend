@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { HeaderComponent } from '../../components/header/header.component';
 import { NgxEchartsModule } from 'ngx-echarts';
@@ -19,7 +19,8 @@ import { NotificationComponent } from '../../components/notification/notificatio
   standalone: true,
   imports: [SidebarComponent,NotificationComponent ,HttpClientModule,HeaderComponent,NgxEchartsModule,CommonModule, NgxPaginationModule,FormsModule],
   templateUrl: './task-home.component.html',
-  styleUrl: './task-home.component.scss'
+  styleUrl: './task-home.component.scss',
+  encapsulation: ViewEncapsulation.None,
 })
 export class TaskHomeComponent implements OnInit {
   constructor(private modalService: NgbModal,private tasksService: TaskService, protected _notificationSvc: NotificationService,){
@@ -27,10 +28,10 @@ export class TaskHomeComponent implements OnInit {
   }
   
   chartOptions: EChartsOption = {};
-  currentPage: number = 1;
+ tasksCount!:any;
   tasks:any;
 recentTasks!:any;
-
+p: number = 1;
 newStatus!:string;
  newAction:string='';
   ngOnInit(): void {
@@ -42,41 +43,55 @@ newStatus!:string;
  
     });
     
+    this.tasksService.getTasksCount().subscribe((data: any) => {
+      
+  this.tasksCount = data;
+  // console.log(this.tasksCount)
+  let statusMap: { [key: string]: { label: string; color: string } } = {
+    'Not Started': { label: 'New', color: '#0b47b83d' },
+    Inprogress: { label: 'Active', color: '#89c8de' },
+    Completed: { label: 'Completed', color: '#0080433d' }
+  };
   
-    this.chartOptions = {
-      title: {
-        text: '',
-        left: 'center'
-      },
-      tooltip: {},
-      xAxis: [
-        {
-          type: 'category',   
-          data: ['New', 'Active', 'Completed', 'Closed'],
-          axisLabel: {
-            rotate: 45,
-            interval: 0,  
-          }
+  // Create xAxis labels
+  const xAxisData = Object.keys(statusMap).map(key => statusMap[key].label);
+  
+  // Build series data
+  let chartSeriesData = Object.keys(statusMap).map(key => ({
+    value: this.tasksCount[key] || 0,
+    itemStyle: { color: statusMap[key].color }
+  }));
+  this.chartOptions = {
+    title: {
+      text: '',
+      left: 'center'
+    },
+    tooltip: {},
+    xAxis: [
+      {
+        type: 'category',   
+        data: ['New', 'Active', 'Completed'],
+        axisLabel: {
+          rotate: 45,
+          interval: 0,  
         }
-      ],
-      yAxis: [
-        {
-          type: 'value'  
-        }
-      ],
-      series: [
-        {
-          name: 'Task',
-          type: 'bar',
-          data: [
-            { value: 5, itemStyle: { color: '#007bff' } },
-            { value: 7, itemStyle: { color: '#007ba5' } },
-            { value: 9, itemStyle: { color: '#007bda' } },
-            { value: 8, itemStyle: { color: '#007bfd' } }
-          ]
-        }
-      ]
-    };
+      }
+    ],
+    yAxis: [
+      {
+        type: 'value'  
+      }
+    ],
+    series: [
+      {
+        name: 'Task',
+        type: 'bar',
+        data: chartSeriesData
+      }
+    ]
+  };
+    });
+
   }
   openTaskModal() {
     const modalRef = this.modalService.open(AddTaskComponent);
@@ -91,7 +106,7 @@ newStatus!:string;
     return  'TZK-' + id.slice(-4);  
   }   
   updateTask(id: string, status: string) {
-    if (status === "NOT_STARTED") {
+    if (status === "Not Started") {
       this.newStatus = "Inprogress";
       this.newAction = "Start";
     } else if (status === "Inprogress") {
@@ -112,9 +127,11 @@ newStatus!:string;
         if (res.value) {
           this.tasksService.updateTask(id, this.newStatus).subscribe(
             (response: any) => {
+              this._notificationSvc.success('', 'Updated successfully');
               this.ngOnInit();
             },
             (error: any) => {
+              this._notificationSvc.error('', 'Updation failed');
             }
           );
         }

@@ -1,0 +1,63 @@
+.main-container {
+    display: flex;
+    flex-direction: row;
+}
+
+/* Sidebar styling */
+app-sidebar {
+    width: 200px; 
+    height: 100vh;
+}
+
+.content {
+    width: calc(100% - 220px); 
+    padding: 10px;
+    margin-top: 80px;
+
+}
+.action-btn{
+  color:#23A3A4;
+}
+.label-style{
+    color: grey;
+    font-size: 11px;
+}
+.title-label{
+      color:black;
+      font-size: 13px;
+      font-weight: 500;
+}
+.accordion-button{
+    padding:  0px;
+    font-size: 14px;
+   border: 1px solid lightgrey;
+   background-color:#7fd8d929!important;
+}
+.list-group-item{
+font-size: 13px;
+}
+.accordion-button:after{
+  display: none;
+}
+.card-header{
+    background-color: #23A3A4;
+}
+.vertical-line {
+    width: 4px;
+    height: 100%;
+     background-color: #23A3A4;
+ 
+  }
+  .bg-blue-sideline{
+    background-color:#23A3A4;
+  }
+  .btn-create{
+    background-color:#D3FBFB;
+  }
+  .title-text{
+    font-weight: 500;
+  }
+  .pointer {
+    cursor: pointer;
+  }
+  

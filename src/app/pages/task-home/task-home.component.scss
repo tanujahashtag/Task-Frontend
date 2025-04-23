@@ -20,43 +20,61 @@ app-sidebar {
     font-size: 11px;
 }
 .title-label{
-    color: grey; 
+    color:black;
     font-size: 13px;
+    font-weight: 500;
+  
 }
 .accordion-button{
     padding:  0px;
     font-size: 14px;
    border: 1px solid lightgrey;
-   background-color: aliceblue;;
+   background-color:#7fd8d929!important;
 }
 .list-group-item{
 font-size: 13px;
 }
 .accordion-button:after{
   display: none;
-// width: 1rem;
-// height: 1rem;
-// background-size: .5rem;
-// margin-left: 0 !important;
-// // order: -1;
-// margin-right: .5rem;
 }
 .card-header{
-    background-color: #c0dff4;
+    background-color: #D3FBFB;
+    font-weight: 500;
+}
+.action-btn{
+  color: #23A3A4;
+}
+.bg-notstarted{
+  background-color: #0b47b83d;
+}
+.bg-inprogress{
+  background-color: #89c8de;
+}
+
+
+.bg-completed{
+  background-color: #0080433d;
+}
+.bg-closed{
+  background-color: #0080433d;
 }
 .vertical-line {
     width: 4px;
     height: 100%;
   
   }
+  .status-value{
+    border-radius: 4px;
+  }
   .bg-blue-sideline{
-    background-color: rgb(48, 74, 109);
+    background-color: rgb(176, 147, 244);
   }
   .bg-pink{
-   background-color: rgb(228, 147, 235);
+   background-color: rgb(6,134,241,0.9);
   }
   .btn-create{
-    background-color:#c0dff4;
+    background-color:#D3FBFB;
+    font-weight: 500;
   }
   .title-text{
     font-weight: 500;
@@ -64,5 +82,14 @@ font-size: 13px;
   .pointer {
     cursor: pointer;
   }
+ .ngx-pagination .pagination-previous,.ngx-pagination .pagination-next {
+background-color: white!important;
+color: black;
+font-size: 12px;
+  }
+  .task-title{
+    font-size: 13px;
+  }
+
   
   

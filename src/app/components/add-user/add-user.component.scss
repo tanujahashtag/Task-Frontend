@@ -1,0 +1,50 @@
+
+.btn-custom-success {
+    width: auto;
+    height: auto;
+    background-color: #007ba5;
+    color: white;
+    font-size: 10px;
+    margin: 5px 3px;
+    box-shadow: 0 3px 4px 0 rgb(0 0 0 / 30%);
+  }
+  .btn-custom-success:hover {
+    color: white;
+  }
+  .update-btn:hover{
+    border:1px solid #007ba5; 
+    background-color: white;
+    color: #007ba5; 
+}
+
+  .btn-custom-cancel {
+    width: auto;
+    height: auto;
+    background-color: none;
+    color: black;
+    font-size: 10px;
+    margin: 5px 3px;
+    box-shadow: 0 3px 4px 0 rgb(0 0 0 / 30%);
+  }
+  
+
+// ------------------------input tag-------------------------------------
+// --------------------------------------------------------------------
+::ng-deep tag-input .ng2-tag-input .ng2-tags-container .ng2-tag {
+  font-size: 14px;
+  font-weight: 600;
+  color: #2c3e50;
+  background-color: #e0f7fa;
+  border-radius: 4px;
+  padding: 5px 10px;
+}
+.tag__text {
+  background: rgb(243, 243, 146) !important;
+  box-shadow: 1px 3px 2px rgba(0, 0, 0, 20%);
+  font-size: 12px !important;
+}
+.modal-header{
+  background-color:#007ba54d;
+  font-weight: 500;
+  color: #0000008c;
+}
