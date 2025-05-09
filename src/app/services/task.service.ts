@@ -1,4 +1,4 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient,HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 
@@ -6,17 +6,29 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class TaskService {
-  constructor(private http: HttpClient) {}
+  userInfo!:any;
+authToken!:any;
+  constructor(private http: HttpClient) {
+   
+  
+   }
+  
 
   getTasks() {
+    const storedUser = localStorage.getItem('userInfo');
+    this.authToken=localStorage.getItem('authToken')
+    this.userInfo = storedUser ? JSON.parse(storedUser) : null;
+    const headers = new HttpHeaders({
+            'Authorization': `Bearer ${ this.authToken}`
+          });
     // console.log(environment.apiUrl)
-    return this.http.get(`${environment.apiUrl}/task/tasks`);
+    return this.http.get(`${environment.apiUrl}/tasks/get-all`,{headers});
   }
   getTasksCount() {
-    return this.http.get(`${environment.apiUrl}/task/tasks-count`);
+    return this.http.get(`${environment.apiUrl}/tasks/tasks-count`);
   }
   addTask(taskdata:any){
-    return this.http.post(`${environment.apiUrl}/task/tasks`,taskdata);
+    return this.http.post(`${environment.apiUrl}/tasks/add`,taskdata);
   }
   getTaskDetails(id:string){
     // console.log(`${environment.apiUrl}/tasks/:${id}`)?

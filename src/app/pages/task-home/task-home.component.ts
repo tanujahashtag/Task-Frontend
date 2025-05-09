@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { SidebarComponent } from '../../components/sidebar/sidebar.component';
 import { HeaderComponent } from '../../components/header/header.component';
 import { NgxEchartsModule } from 'ngx-echarts';
@@ -14,32 +14,64 @@ import { HttpClientModule } from '@angular/common/http';
 import Swal from 'sweetalert2';
 import { NotificationService } from '../../services/notification.service';
 import { NotificationComponent } from '../../components/notification/notification.component';
+import { AccordionComponent } from '../../components/accordion/accordion.component';
 @Component({
   selector: 'app-task-home',
   standalone: true,
-  imports: [SidebarComponent,NotificationComponent ,HttpClientModule,HeaderComponent,NgxEchartsModule,CommonModule, NgxPaginationModule,FormsModule],
+  imports: [SidebarComponent,NotificationComponent ,AccordionComponent,HttpClientModule,HeaderComponent,NgxEchartsModule,CommonModule, NgxPaginationModule,FormsModule],
   templateUrl: './task-home.component.html',
   styleUrl: './task-home.component.scss',
   encapsulation: ViewEncapsulation.None,
 })
 export class TaskHomeComponent implements OnInit {
-  constructor(private modalService: NgbModal,private tasksService: TaskService, protected _notificationSvc: NotificationService,){
+  constructor(private modalService: NgbModal,private cd: ChangeDetectorRef,private tasksService: TaskService, protected _notificationSvc: NotificationService,){
 
   }
-  
+  p: number = 1;
+  lineChartOptions!: EChartsOption;
   chartOptions: EChartsOption = {};
  tasksCount!:any;
   tasks:any;
+  tasksArray!:any;
 recentTasks!:any;
-p: number = 1;
 newStatus!:string;
  newAction:string='';
+ current_tab: string = 'alltask';
+
   ngOnInit(): void {
+   this. current_tab = 'alltask';
+    const weekDates = this.getWorkWeekDates();
+    this.lineChartOptions = {
+      title: {
+        text: 'Total hours worked/Day'
+      },
+      tooltip: {
+        trigger: 'axis'
+      },
+      xAxis: {
+        type: 'category',
+        data: weekDates
+      },
+      yAxis: {
+        type: 'value'
+      },
+      series: [
+        {
+          name: 'Hours',
+          data: [8, 7, 9, 6, 5],
+          type: 'line',
+          smooth: true
+        }
+      ]
+    };
+  
     this.tasksService.getTasks().subscribe(data => {
-      this.tasks = data;
-      const tasksArray = data as any[];
-  this.recentTasks = tasksArray.slice(-2);
-    }, error => {
+      this.tasksArray = data;
+      this.filterTasks();
+      this.cd.detectChanges();
+  // this.recentTasks = tasksArray.slice(-2);
+    }, 
+    error => {
  
     });
     
@@ -49,8 +81,8 @@ newStatus!:string;
   // console.log(this.tasksCount)
   let statusMap: { [key: string]: { label: string; color: string } } = {
     'Not Started': { label: 'New', color: '#0b47b83d' },
-    Inprogress: { label: 'Active', color: '#89c8de' },
-    Completed: { label: 'Completed', color: '#0080433d' }
+    Inprogress: { label: 'Active', color: '#ea05a95c' },
+    Completed: { label: 'Completed', color:'rgb(84 112 198)' }
   };
   
   // Create xAxis labels
@@ -102,9 +134,23 @@ newStatus!:string;
           }
         })
   }
-  getLast4Chars(id:string): string {
-    return  'TZK-' + id.slice(-4);  
-  }   
+  filterTasks() {
+    if (this.current_tab === 'alltask') {
+      console.log(this.current_tab)
+      this.tasks = this.tasksArray;
+      console.log(this.tasks)
+      this.cd.detectChanges();
+    } else if (this.current_tab === 'due') {
+      const now = new Date();
+     this.tasks =this.tasksArray.filter((task: { due_date: string | number | Date; }) => {
+        const dueDate = new Date(task.due_date);
+        return dueDate < now;
+      });
+    }
+  
+  }
+
+ 
   updateTask(id: string, status: string) {
     if (status === "Not Started") {
       this.newStatus = "Inprogress";
@@ -177,6 +223,34 @@ newStatus!:string;
         } else {
         }
       });
+    }
+
+    getWorkWeekDates(): string[] {
+      const today = new Date();
+      const dayOfWeek = today.getDay(); // 0 (Sun) - 6 (Sat)
+  
+      const diffToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+      const monday = new Date(today);
+      monday.setDate(today.getDate() + diffToMonday);
+  
+      const dates = [];
+  
+      for (let i = 0; i < 5; i++) {
+        const nextDay = new Date(monday);
+        nextDay.setDate(monday.getDate() + i);
+  
+        const day = nextDay.getDate().toString().padStart(2, '0');
+        const month = (nextDay.getMonth() + 1).toString().padStart(2, '0');
+        const year = nextDay.getFullYear();
+  
+        dates.push(`${day}/${month}/${year}`);
+      }
+  
+      return dates;
+    }
+    activeTab(tab: string): any {
+      this.current_tab = tab;
+      this.filterTasks();
     }
     }
    

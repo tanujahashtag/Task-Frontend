@@ -11,13 +11,13 @@ export class UserService {
         return this.http.post(`${environment.apiUrl}/auth/register`,userdata);
   }
   getUsers(){
-    return this.http.get(`${environment.apiUrl}/auth/users`);
+    return this.http.get(`${environment.apiUrl}/auth/get-all`);
   }
   signIn(userdata:any){
     return this.http.post(`${environment.apiUrl}/auth/login`,userdata);
   }
-  getUserList(){
-    return this.http.get(`${environment.apiUrl}/auth/users-list`);
+  getUserList(id:string){
+    return this.http.get(`${environment.apiUrl}/auth/users-list/${id}`);
 }
   
 }

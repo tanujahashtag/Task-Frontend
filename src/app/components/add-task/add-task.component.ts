@@ -33,6 +33,10 @@ export class AddTaskComponent {
       assigned_to:new UntypedFormControl(null, Validators.required),
       project_name:new UntypedFormControl(null, Validators.required),
  })
+ this.addTaskForm.get('project_name')!.valueChanges.subscribe(projectId => {
+  // ✅ Clear assignee value
+  this.addTaskForm.get('assigned_to')!.setValue(null);
+ })
 }
 ngOnInit(){
   this.ProjectService.getProjectList().subscribe(
@@ -44,15 +48,7 @@ ngOnInit(){
       })
     )
     })
-    this.UserService.getUserList().subscribe(
-      (response:any) => {
-        // console.log(response)
-        this.assigneeOptions =response.users.map((user: any) => ({
-          id: user._id,  
-    name: user.name,
-        })
-      )
-      })
+  
 }
  closeModal() {
   this.activeModal.close();
@@ -66,9 +62,10 @@ let taskdata={
   project_id:data.project_name.id,
 user_id:data.assigned_to.id,
   assigned_to:data.assigned_to.name,
+
   due_date:data.due_date
 }
-console.log(taskdata);
+// console.log(taskdata);
   this.TaskService.addTask(taskdata).subscribe(
     (response) => {
         this.msg ='Task created successfully';
@@ -82,7 +79,18 @@ onValueChange(data:any){
 
 }
 projectChange(data:any){
+// console.log(data)
 
+this.assigneeOptions=[];
+this.UserService.getUserList(data?.id).subscribe(
+  (response:any) => {
+    // console.log(response)
+    this.assigneeOptions =response.users.map((user: any) => ({
+      id: user._id,  
+name: user.name,
+    })
+  )
+  })
 }
 triggerEvent(msg: string) {
   this.event.emit(msg);
