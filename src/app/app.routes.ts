@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { BreadcrumbResolver,  } from './Dynamic Route resolver/breadcrumb-routeresolver.';
 
 export const routes: Routes = [ { 
     path: '', 
@@ -29,6 +30,9 @@ export const routes: Routes = [ {
     import('./pages/teams/teams-routes').then(
       (m) => m.TEAM_ROUTES
     ),
+   data: {
+    breadcrumb: 'Teams' 
+  }
 
 },
 ];
